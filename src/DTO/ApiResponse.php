@@ -5,12 +5,26 @@ namespace App\DTO;
 class ApiResponse
 {
     public mixed $data;
+
     public ?array $meta;
 
-    public function __construct(mixed $data, ?array $meta = [])
-    {
+    public ?string $message;
+
+    public function __construct(
+        mixed $data,
+        ?array $meta = [],
+        ?string $message = null
+    ) {
         $this->data = $data;
         $this->meta = $meta;
+        $this->message = $message;
+    }
+
+    public static function withMessage(array $data, string $message, string $dataKey = 'user'): self
+    {
+        $data['message'] = $message;
+
+        return new self(data: $data, meta: []);
     }
 
     public static function withPagination(

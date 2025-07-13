@@ -4,6 +4,13 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    kafka_brokers: '%env(KAFKA_BROKERS)%'
+    kafka.group_id.registration: '%env(KAFKA_GROUP_ID_REGISTRATION)%'
+    kafka.group_id.product: '%env(KAFKA_GROUP_ID_PRODUCT)%'
+    kafka.enable_auto_commit: '%env(bool:KAFKA_ENABLE_AUTO_COMMIT)%'
+    kafka_user_registration_topic: '%env(KAFKA_USER_REGISTRATION_TOPIC)%'
+    kafka_product_update_topic: '%env(KAFKA_PRODUCT_UPDATE_TOPIC)%'
+    kafka_product_create_topic: '%env(KAFKA_PRODUCT_CREATE_TOPIC)%'
 
 services:
     # default configuration for services in *this* file
@@ -24,5 +31,71 @@ services:
             - { name: kernel.event_listener, event: kernel.exception }
     App\Service\ApiResponseNormalizer:
         tags: [ 'serializer.normalizer' ]
+        
+    # services    
+    App\Service\Kafka\ProducerService:
+        arguments:
+            $kafkaBrokers: '%kafka_brokers%'
+                        
+    App\Service\Kafka\User\RegistrationConsumerService:
+        arguments:
+            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $config: !service
+                class: App\Config\KafkaConsumerConfig
+                arguments:
+                    $brokers: '%kafka_brokers%'
+                    $topic: '%kafka_user_registration_topic%'
+                    $groupId: '%kafka.group_id.product%'
+                    $autoCommit: '%kafka.enable_auto_commit%'
+                    $waitingMessage: '🟢 Waiting for register messages...'
+    
+    App\Service\Kafka\Product\UpdateConsumerService:
+        arguments:
+            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $config: !service
+                class: App\Config\KafkaConsumerConfig
+                arguments:
+                    $brokers: '%kafka_brokers%'
+                    $topic: '%kafka_product_update_topic%'
+                    $groupId: '%kafka.group_id.product%'
+                    $autoCommit: '%kafka.enable_auto_commit%'
+                    $waitingMessage: '🟢 Waiting for update messages...'
+    
+    App\Service\Kafka\Product\CreateConsumerService:
+        arguments:
+            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $config: !service
+                class: App\Config\KafkaConsumerConfig
+                arguments:
+                    $brokers: '%kafka_brokers%'
+                    $topic: '%kafka_product_create_topic%'
+                    $groupId: '%kafka.group_id.product%'
+                    $autoCommit: '%kafka.enable_auto_commit%'
+                    $waitingMessage: '🟢 Waiting for create messages...'
+    
+    # commands
+    App\Command\ConsumeRegistrationCommand:
+        arguments:
+            $consumerService: '@App\Service\Kafka\User\RegistrationConsumerService'           
+                
+    App\Command\ConsumeProductUpdateCommand:
+        arguments:
+            $consumerService: '@App\Service\Kafka\Product\UpdateConsumerService'
+            
+    App\Command\ConsumeProductCreateCommand:
+        arguments:
+            $consumerService: '@App\Service\Kafka\Product\CreateConsumerService'
+            
+    # handlers       
+    App\Message\Handler\UserRegisteredMessageHandler:
+        arguments:
+            $userRegistrationTopic: '%kafka_user_registration_topic%'
 
-
+    App\Message\Handler\ProductUpdateMessageHandler:
+        arguments:
+            $productTopic: '%kafka_product_update_topic%'
+                
+    App\Message\Handler\ProductCreateMessageHandler:
+        arguments:
+            $productTopic: '%kafka_product_create_topic%'             
+        

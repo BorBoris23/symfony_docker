@@ -4,16 +4,16 @@ namespace App\DTO\Product;
 
 class OutputItemDTO
 {
-    public int $id;
-    public string $name;
-    public int $weight;
-    public int $height;
-    public int $width;
-    public int $length;
-    public string $description;
-    public int $cost;
-    public int $tax;
-    public int $version;
+    private int $id;
+    private string $name;
+    private int $weight;
+    private int $height;
+    private int $width;
+    private int $length;
+    private string $description;
+    private int $cost;
+    private int $tax;
+    private int $version;
 
     public function __construct(
         int $id,
@@ -37,5 +37,55 @@ class OutputItemDTO
         $this->cost = $cost;
         $this->tax = $tax;
         $this->version = $version;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    public function getWidth(): int
+    {
+        return $this->width;
+    }
+
+    public function getLength(): int
+    {
+        return $this->length;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getCost(): int
+    {
+        return $this->cost;
+    }
+
+    public function getTax(): int
+    {
+        return $this->tax;
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
     }
 }

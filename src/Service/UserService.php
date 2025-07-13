@@ -18,6 +18,17 @@ readonly class UserService
         return $this->userRepository->findOneBy($criteria);
     }
 
+    public function getUserByID($id): OutputDto
+    {
+        $user = $this->userRepository->findOne($id);
+        return new OutputDto(
+            $user->getId(),
+            $user->getName(),
+            $user->getEmail(),
+            $user->getPhone(),
+        );
+    }
+
     public function create(InputDto $dto): OutputDto
     {
         $user = $this->userRepository->create($dto);

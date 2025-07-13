@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    private const array DEFAULT_ROLE = ['ROLE_USER'];
+
     private UserPasswordHasherInterface $hasher;
 
     public function __construct(
@@ -32,7 +34,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setName($dto->name)
             ->setEmail($dto->email)
             ->setPhone($dto->phone)
-            ->setRoles(['ROLE_USER']);
+            ->setRoles(self::DEFAULT_ROLE);
 
         $user->setPassword($this->hasher->hashPassword($user, $dto->password));
 
@@ -40,6 +42,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
 
         return $user;
+    }
+
+    public function findOne($id): User
+    {
+       return $this->find($id);
     }
 
     /**
@@ -56,5 +63,3 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 }
-
-

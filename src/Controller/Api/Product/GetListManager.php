@@ -40,6 +40,6 @@ class GetListManager
             $pagination->limit
         );
 
-        return $this->serializer->normalize($response, 'json');
+        return $this->serializer->normalize($response->toArray(), 'json');
     }
 }

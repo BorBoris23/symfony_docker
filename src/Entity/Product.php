@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(name: 'products')]
@@ -14,33 +15,43 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
     private string $name;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $weight;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $height;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $width;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $length;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['product:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $cost;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $tax;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private int $version;
 
     public function getId(): int

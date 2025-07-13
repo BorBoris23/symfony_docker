@@ -24,16 +24,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     libpq-dev \
     unzip \
+    librdkafka-dev \
+    libssl-dev \
+    pkg-config \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
-	install-php-extensions \
-		@composer \
-		apcu \
-		intl \
-		opcache \
-		zip \
-	;
+    install-php-extensions \
+        @composer \
+        apcu \
+        intl \
+        opcache \
+        zip \
+        pdo_pgsql \
+        rdkafka
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

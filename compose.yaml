@@ -16,6 +16,8 @@ services:
       SYMFONY_VERSION: ${SYMFONY_VERSION:-}
       STABILITY: ${STABILITY:-stable}
     volumes:
+      - .:/app
+      - ./config/jwt:/app/config/jwt:ro
       - caddy_data:/data
       - caddy_config:/config
     ports:
@@ -31,7 +33,15 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
-
+  kafka:
+      image: lensesio/fast-data-dev:latest
+      ports:
+          - '2181:2181'
+          - '3030:3030'
+          - '8081:8081'
+          - '8082:8082'
+          - '8083:8083'
+          - '9092:9092'
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

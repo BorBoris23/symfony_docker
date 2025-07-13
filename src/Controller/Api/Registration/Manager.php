@@ -2,21 +2,39 @@
 
 namespace App\Controller\Api\Registration;
 
+use App\DTO\ApiResponse;
 use App\DTO\Registration\InputDto;
-use App\DTO\Registration\OutputDto;
+use App\Message\Command\User\RegisteredMessage;
 use App\Service\UserService;
+use RdKafka\Exception;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class Manager
+readonly class Manager
 {
-    private UserService $userService;
+    private CONST string REGISTER_MESSAGE = 'User successfully registered';
 
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(
+        private UserService $userService,
+        private SerializerInterface $serializer,
+        private MessageBusInterface $messageBus,
+    ) {}
 
-    public function register(InputDto $dto): OutputDto
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
+    public function register(InputDto $dto): array
     {
-        return $this->userService->create($dto);
+        $outputDto = $this->userService->create($dto);
+        $response = ApiResponse::withMessage(
+            data: $this->serializer->normalize($outputDto, 'array'),
+            message: self::REGISTER_MESSAGE
+        );
+
+        $this->messageBus->dispatch(new RegisteredMessage($outputDto));
+
+        return $this->serializer->normalize($response, 'json');
     }
 }

@@ -4,29 +4,31 @@ namespace App\Controller\Api\Product;
 
 use App\DTO\ApiResponse;
 use App\DTO\Product\Update\InputDTO;
+use App\Message\Command\Product\UpdateMessage;
 use App\Service\ProductService;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class UpdateManager
+readonly class UpdateManager
 {
-    private SerializerINterface $serializer;
-
-    private ProductService $productService;
-
     public function __construct(
-        ProductService $productService,
-        SerializerInterface $serializer
-    ) {
-        $this->productService = $productService;
-        $this->serializer = $serializer;
-    }
+        private ProductService $productService,
+        private SerializerInterface $serializer,
+        private MessageBusInterface $messageBus,
+    ) {}
 
+    /**
+     * @throws ExceptionInterface
+     */
     public function update(InputDto $dto): array
     {
-        $response = new ApiResponse(
-            $this->productService->update($dto)
-        );
+        $outputDto = $this->productService->update($dto);
 
-        return $this->serializer->normalize($response, 'json');
+        $response = new ApiResponse($outputDto);
+
+        $this->messageBus->dispatch(new UpdateMessage($outputDto));
+
+        return $this->serializer->normalize($response->toArray(), 'json');
     }
 }

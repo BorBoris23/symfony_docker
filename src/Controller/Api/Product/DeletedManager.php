@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\Product;
 
+use App\DTO\ApiResponse;
 use App\DTO\Product\Deleted\InputDTO;
 use App\Service\ProductService;
 
@@ -19,10 +20,9 @@ class DeletedManager
     {
         $this->productService->delete($dto);
 
-        return [
-            'status' => 'success',
-            'message' => 'Products successfully deleted.',
-            'ids' => $dto->ids,
-        ];
+        return ApiResponse::withMessage(
+            ['ids' => $dto->ids],
+            'Products successfully deleted.'
+        )->toArray();
     }
 }
