@@ -54,6 +54,15 @@ class Product
     #[Groups(['product:read'])]
     private int $version;
 
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private int $quantity;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
+    private string $article;
+
+
     public function getId(): int
     {
         return $this->id;
@@ -155,6 +164,28 @@ class Product
     public function setVersion(int $version): self
     {
         $this->version = $version;
+        return $this;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+        return $this;
+    }
+
+    public function getArticle(): string
+    {
+        return $this->article;
+    }
+
+    public function setArticle(string $article): self
+    {
+        $this->article = $article;
         return $this;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\Api\Registration;
 
 use App\DTO\Registration\InputDto;
+use App\Service\User\Register;
 use RdKafka\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,9 +20,10 @@ class Controller extends AbstractController
      */
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function invoke(
-        #[MapRequestPayload] InputDto $dto,
-        Manager $manager
+//        #[MapRequestPayload] InputDto $dto,
+        InputDto $dto,
+        Register $service
     ): JsonResponse {
-        return new JsonResponse($manager->register($dto));
+        return new JsonResponse($service->register($dto));
     }
 }

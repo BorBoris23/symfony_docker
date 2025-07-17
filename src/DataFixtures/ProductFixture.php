@@ -24,6 +24,8 @@ class ProductFixture extends Fixture
             $product->setCost($faker->numberBetween(100, 10000));
             $product->setTax($faker->numberBetween(0, 500));
             $product->setVersion(1);
+            $product->setQuantity($faker->numberBetween(1, 500));
+            $product->setArticle(strtoupper($faker->bothify('???-#####')));
 
             $manager->persist($product);
         }

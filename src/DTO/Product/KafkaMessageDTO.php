@@ -9,11 +9,13 @@ readonly class KafkaMessageDTO implements KafkaMessageInterface
     public function __construct(
         private int $id,
         private string $name,
+        private string $article,
         private MeasurementsDTO $measurements,
         private ?string $description,
         private int $cost,
         private int $tax,
         private int $version,
+        private int $quantity,
     ) {}
 
     public function getId(): int
@@ -24,6 +26,11 @@ readonly class KafkaMessageDTO implements KafkaMessageInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getArticle(): string
+    {
+        return $this->article;
     }
 
     public function getMeasurements(): MeasurementsDTO
@@ -49,5 +56,10 @@ readonly class KafkaMessageDTO implements KafkaMessageInterface
     public function getVersion(): int
     {
         return $this->version;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
     }
 }

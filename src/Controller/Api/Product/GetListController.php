@@ -3,6 +3,7 @@
 namespace App\Controller\Api\Product;
 
 use App\DTO\Product\List\InputDTO;
+use App\Service\Product\GetList;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
@@ -17,8 +18,8 @@ final class GetListController extends AbstractController
     #[Route('/api/products', name: 'app_api_product', methods: ['GET'])]
     public function __invoke(
         #[MapQueryString] InputDTO $dto,
-        GetListManager $manager,
+        GetList $service,
     ): JsonResponse {
-        return new JsonResponse($manager->getList($dto));
+        return new JsonResponse($service->getList($dto));
     }
 }

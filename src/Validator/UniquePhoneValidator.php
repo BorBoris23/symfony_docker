@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-use App\Service\UserService;
+use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 class UniquePhoneValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly UserService $service
+        private readonly UserRepository $repository
     ) {}
 
     public function validate(mixed $value, Constraint $constraint): void
@@ -30,7 +30,7 @@ class UniquePhoneValidator extends ConstraintValidator
 
         $criteria = ['phone' => $value];
 
-        if ($this->service->getByCriteria($criteria)) {
+        if ($this->repository->findOneBy($criteria)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

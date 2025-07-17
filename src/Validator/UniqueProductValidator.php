@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-use App\Service\ProductService;
+use App\Repository\ProductRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -10,9 +10,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class UniqueProductValidator extends ConstraintValidator
 {
-    public function __construct(
-        private readonly ProductService $service
-    ) {}
+    public function __construct(private readonly ProductRepository $repository) {}
 
     public function validate(mixed $value, Constraint $constraint): void
     {
@@ -28,9 +26,16 @@ class UniqueProductValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, 'string');
         }
 
-        $criteria = ['name' => $value];
+        $object = $this->context->getObject();
 
-        if ($this->service->getByCriteria($criteria)) {
+        $id = null;
+        if (property_exists($object, $constraint->idProperty)) {
+            $id = $object->{$constraint->idProperty};
+        }
+
+        $existing = $this->repository->findOneBy(['article' => $value]);
+
+        if ($existing && $existing->getId() !== $id) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

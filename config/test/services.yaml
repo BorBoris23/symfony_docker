@@ -1,0 +1,6 @@
+# config/test/services.yaml
+services:
+    # Подключаем фикстуры из tests/DataFixtures для тестовой среды
+    App\Tests\DataFixtures\:
+        resource: '../../tests/DataFixtures'
+        tags: ['doctrine.fixture.orm']

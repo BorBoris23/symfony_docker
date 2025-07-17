@@ -10,8 +10,13 @@ class InputDTO
     #[Assert\NotBlank]
     #[Assert\Type('string')]
     #[Assert\Length(max: 255)]
-    #[UniqueProduct]
     public string $name;
+
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(max: 255)]
+    #[UniqueProduct]
+    public string $article;
 
     #[Assert\NotNull]
     #[Assert\Type('integer')]
@@ -51,4 +56,9 @@ class InputDTO
     #[Assert\Type('integer')]
     #[Assert\Positive]
     public int $version;
+
+    #[Assert\NotNull]
+    #[Assert\Type('integer')]
+    #[Assert\PositiveOrZero]
+    public int $quantity;
 }

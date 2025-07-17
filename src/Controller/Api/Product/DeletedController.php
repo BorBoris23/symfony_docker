@@ -3,6 +3,7 @@
 namespace App\Controller\Api\Product;
 
 use App\DTO\Product\Deleted\InputDTO;
+use App\Service\Product\Deleted;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,8 +16,8 @@ final class DeletedController extends AbstractController
     #[Route('/api/products', name: 'app_api_deleted_product', methods: ['DELETE'])]
     public function __invoke(
         #[MapRequestPayload] InputDto $dto,
-        DeletedManager $manager
+        Deleted $service
     ): JsonResponse {
-        return new JsonResponse($manager->delete($dto));
+        return new JsonResponse($service->delete($dto));
     }
 }

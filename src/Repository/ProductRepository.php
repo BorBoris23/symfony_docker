@@ -25,6 +25,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         $product = (new Product())
             ->setName($inputDto->name)
+            ->setArticle($inputDto->article)
             ->setWeight($inputDto->weight)
             ->setHeight($inputDto->height)
             ->setLength($inputDto->length)
@@ -32,7 +33,8 @@ class ProductRepository extends ServiceEntityRepository
             ->setDescription($inputDto->description)
             ->setVersion($inputDto->version)
             ->setCost($inputDto->cost)
-            ->setTax($inputDto->tax);
+            ->setTax($inputDto->tax)
+            ->setQuantity($inputDto->quantity);
 
         $this->em->persist($product);
         $this->em->flush();
@@ -45,13 +47,15 @@ class ProductRepository extends ServiceEntityRepository
         $product = $this->find($inputDto->id);
         $product->setName($inputDto->name)
             ->setWeight($inputDto->weight)
+            ->setArticle($inputDto->article)
             ->setHeight($inputDto->height)
             ->setLength($inputDto->length)
             ->setWidth($inputDto->width)
             ->setDescription($inputDto->description)
             ->setVersion($inputDto->version)
             ->setCost($inputDto->cost)
-            ->setTax($inputDto->tax);
+            ->setTax($inputDto->tax)
+            ->setQuantity($inputDto->quantity);
 
         $this->em->persist($product);
         $this->em->flush();

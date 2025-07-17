@@ -29,19 +29,19 @@ services:
     App\EventListener\ValidationExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
-    App\Service\ApiResponseNormalizer:
+    App\Procedure\ApiResponseNormalizer:
         tags: [ 'serializer.normalizer' ]
         
     # services    
-    App\Service\Kafka\ProducerService:
+    App\Infrastructure\Kafka\ProducerService:
         arguments:
             $kafkaBrokers: '%kafka_brokers%'
                         
-    App\Service\Kafka\User\RegistrationConsumerService:
+    App\Infrastructure\Kafka\Consumer\User\RegistrationConsumerService:
         arguments:
-            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $processorService: '@App\Infrastructure\Kafka\GenericProcessorService'
             $config: !service
-                class: App\Config\KafkaConsumerConfig
+                class: App\Infrastructure\Kafka\Config\KafkaConsumerConfig
                 arguments:
                     $brokers: '%kafka_brokers%'
                     $topic: '%kafka_user_registration_topic%'
@@ -49,11 +49,11 @@ services:
                     $autoCommit: '%kafka.enable_auto_commit%'
                     $waitingMessage: '🟢 Waiting for register messages...'
     
-    App\Service\Kafka\Product\UpdateConsumerService:
+    App\Infrastructure\Kafka\Consumer\Product\UpdateConsumerService:
         arguments:
-            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $processorService: '@App\Infrastructure\Kafka\GenericProcessorService'
             $config: !service
-                class: App\Config\KafkaConsumerConfig
+                class: App\Infrastructure\Kafka\Config\KafkaConsumerConfig
                 arguments:
                     $brokers: '%kafka_brokers%'
                     $topic: '%kafka_product_update_topic%'
@@ -61,11 +61,11 @@ services:
                     $autoCommit: '%kafka.enable_auto_commit%'
                     $waitingMessage: '🟢 Waiting for update messages...'
     
-    App\Service\Kafka\Product\CreateConsumerService:
+    App\Infrastructure\Kafka\Consumer\Product\CreateConsumerService:
         arguments:
-            $processorService: '@App\Service\Kafka\GenericProcessorService'
+            $processorService: '@App\Infrastructure\Kafka\GenericProcessorService'
             $config: !service
-                class: App\Config\KafkaConsumerConfig
+                class: App\Infrastructure\Kafka\Config\KafkaConsumerConfig
                 arguments:
                     $brokers: '%kafka_brokers%'
                     $topic: '%kafka_product_create_topic%'
@@ -76,26 +76,26 @@ services:
     # commands
     App\Command\ConsumeRegistrationCommand:
         arguments:
-            $consumerService: '@App\Service\Kafka\User\RegistrationConsumerService'           
+            $consumerService: '@App\Infrastructure\Kafka\Consumer\User\RegistrationConsumerService'           
                 
     App\Command\ConsumeProductUpdateCommand:
         arguments:
-            $consumerService: '@App\Service\Kafka\Product\UpdateConsumerService'
+            $consumerService: '@App\Infrastructure\Kafka\Consumer\Product\UpdateConsumerService'
             
     App\Command\ConsumeProductCreateCommand:
         arguments:
-            $consumerService: '@App\Service\Kafka\Product\CreateConsumerService'
+            $consumerService: '@App\Infrastructure\Kafka\Consumer\Product\CreateConsumerService'
             
     # handlers       
-    App\Message\Handler\UserRegisteredMessageHandler:
+    App\Infrastructure\Kafka\Message\Handler\UserRegisteredMessageHandler:
         arguments:
             $userRegistrationTopic: '%kafka_user_registration_topic%'
 
-    App\Message\Handler\ProductUpdateMessageHandler:
+    App\Infrastructure\Kafka\Message\Handler\ProductUpdateMessageHandler:
         arguments:
             $productTopic: '%kafka_product_update_topic%'
                 
-    App\Message\Handler\ProductCreateMessageHandler:
+    App\Infrastructure\Kafka\Message\Handler\ProductCreateMessageHandler:
         arguments:
             $productTopic: '%kafka_product_create_topic%'             
         

@@ -2,27 +2,14 @@
 
 namespace App\DTO\Registration;
 
-class OutputDto
+readonly class OutputDto
 {
-    private int $id;
-
-    private string $name;
-
-    private string $email;
-
-    private string $phone;
-
     public function __construct(
-        int $id,
-        string $name,
-        string $email,
-        string $phone
-    ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->phone = $phone;
-    }
+        private int $id,
+        private string $name,
+        private string $email,
+        private string $phone,
+    ) {}
 
     public function getId(): int
     {

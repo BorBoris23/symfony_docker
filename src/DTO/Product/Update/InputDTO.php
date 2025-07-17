@@ -3,6 +3,7 @@
 namespace App\DTO\Product\Update;
 
 use App\Validator\ExistingProductId;
+use App\Validator\UniqueProduct;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class InputDTO
@@ -12,6 +13,12 @@ class InputDTO
     #[Assert\Positive]
     #[ExistingProductId]
     public int $id;
+
+    #[Assert\NotNull]
+    #[Assert\Type('string')]
+    #[Assert\Length(max: 255)]
+    #[UniqueProduct(idProperty: 'id')]
+    public string $article;
 
     #[Assert\NotNull]
     #[Assert\Type('string')]
@@ -56,4 +63,9 @@ class InputDTO
     #[Assert\Type('integer')]
     #[Assert\Positive]
     public int $version;
+
+    #[Assert\NotNull]
+    #[Assert\Type('integer')]
+    #[Assert\PositiveOrZero]
+    public int $quantity;
 }
