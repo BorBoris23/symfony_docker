@@ -27,9 +27,7 @@ readonly class Register
      */
     public function register(InputDto $dto): array
     {
-//        $outputDto = $this->procedure->create($dto);
-
-        $outputDto = $this->procedure->getUserByID(1);
+        $outputDto = $this->procedure->create($dto);
 
         $response = ApiResponse::withMessage(
             data: $this->serializer->normalize($outputDto, 'array'),

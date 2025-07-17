@@ -20,8 +20,7 @@ class Controller extends AbstractController
      */
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function invoke(
-//        #[MapRequestPayload] InputDto $dto,
-        InputDto $dto,
+        #[MapRequestPayload] InputDto $dto,
         Register $service
     ): JsonResponse {
         return new JsonResponse($service->register($dto));
